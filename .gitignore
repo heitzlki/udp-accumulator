@@ -1,0 +1,5 @@
+_build/
+*.vcd
+results.csv
+.DS_Store
+._*
