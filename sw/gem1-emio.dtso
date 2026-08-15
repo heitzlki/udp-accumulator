@@ -1,0 +1,28 @@
+/* Device-tree overlay: enable GEM1 (e000c000) with its GMII routed through
+ * EMIO into the PL, no PHY - fixed-link tells the macb driver the "link" is
+ * always up at 100/full. The PL supplies both GMII clocks; the SLCR clock
+ * muxes must also be pointed at EMIO, which the DT cannot express - see
+ * setup-eth1.sh.
+ *
+ * For the 10 Mb/s fallback build (clkgen DIV=50) change speed to <10>.
+ *
+ * The PYNQ image ships no dtc; compile on the host and copy the .dtbo over:
+ *   dtc -@ -I dts -O dtb -o gem1-emio.dtbo gem1-emio.dtso
+ */
+/dts-v1/;
+/plugin/;
+
+/ {
+    fragment@0 {
+        target-path = "/axi/ethernet@e000c000";
+        __overlay__ {
+            status = "okay";
+            phy-mode = "gmii";
+            local-mac-address = [02 00 00 00 00 01];
+            fixed-link {
+                speed = <100>;
+                full-duplex;
+            };
+        };
+    };
+};
